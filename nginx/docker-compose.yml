@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - /home/eduardo/Workspace/docker/nginx/html:/usr/share/nginx/html:ro
+      - /home/eduardo/Workspace/docker/nginx/conf:/etc/nginx/conf.d
+
+networks:
+  default:
+    external: 
+      name: localhost-network
