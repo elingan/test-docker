@@ -10,7 +10,7 @@ docker volume create portainer_data
 docker run -d -p 8888:8000 -p 9999:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
 ```
 
-Abrir [portainer](http://localhost:9999) con el usuario y contraseña admin/adminadmin
+Abrir [portainer](http://localhost:9999) con el usuario y contraseña _admin/adminadmin_
 
 ## Contenedores
 
@@ -45,15 +45,11 @@ docker-compose up -d
 
 ## MariaDB
 
-### Acceder a la terminar
+### Acceder a la terminar y/o crear una nueva DB y usuario
 
 ```bash
 docker exec -it mariadb bash
-```
 
-### Crear una nueva DB y usuario
-
-```bash
 mysql -uroot -p"root" \
     -e "CREATE DATABASE IF NOT EXISTS wp_db; \
     GRANT ALL PRIVILEGES ON wp_db.* TO 'wp_user'@'%' IDENTIFIED BY 'wp_pass'; \
@@ -101,3 +97,47 @@ sudo chown -R $USER:html twentytwenty-child
 # permisos de grupo a la carpeta del tema para editar
 sudo chmod go+w wp-content/themes/twentytwenty-child
 ```
+
+### Crear un nuevo Proyecto Tema
+
+- Crear una nueva base de datos (con otro nombre)
+
+```bash
+mysql -uroot -p"root" \
+    -e "CREATE DATABASE IF NOT EXISTS wp_NEW_DATABASE; \
+    GRANT ALL PRIVILEGES ON wp_NEW_DATABASE.* TO 'wp_user'@'%' IDENTIFIED BY 'wp_pass'; \
+    FLUSH PRIVILEGES;"
+```
+
+- Copiar la carpeta wordpress y renombrar con los datos del nuevo proyecto
+
+```yaml
+...
+services:
+    wordpress:
+        ...
+        container_name: wordpress_NEW_NAME
+        ...
+        ports:
+            - NEW_PORT:80
+        environment:
+            ...
+            WORDPRESS_DB_NAME: wp_NEW_DATABASE
+            ...
+        volumes:
+            - ~/Workspace/docker/wp-NEW_FOLDER/conf:/etc/apache2/sites-available
+            - ~/Workspace/docker/wp-NEW_FOLDER/html:/var/www/html
+        ...
+    ...
+...
+```
+
+- Ir a la nueva carpeta y ejecutar por cada docker-compose.yml
+
+```bash
+docker-compose up -d
+```
+
+### Errores
+
+- Si al intentar conectarse la primera vez se produce un error, revisar los permisos del usuario y de la DB de Wordpress.

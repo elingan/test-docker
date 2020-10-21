@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: wordpress
     ports:
-      - 8000:80
+      - 6000:80
     environment:
       WORDPRESS_DB_HOST: mariadb
       MYSQL_ROOT_PASSWORD: root
