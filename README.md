@@ -116,7 +116,7 @@ mysql -uroot -p"root" \
 services:
     wordpress:
         ...
-        container_name: wordpress_NEW_NAME
+        container_name: wp-NEW_NAME
         ...
         ports:
             - NEW_PORT:80
